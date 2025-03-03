@@ -1,0 +1,38 @@
+---
+title: "Stats 100 project"
+author: "Greta Lane and Rowan Pollard"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(rmarkdown)
+library(tidyverse)
+
+```
+
+# Simulate Data
+```{r}
+simulated_ghr_data <-
+  tibble(
+    country =
+      c("Argentina", "USA", "Belize", "China", "France", "Italy", "Japan", "Kenya", "Germany", "Canada"),
+    happiness =
+      runif(n = 10, min = 0, max = 10),
+    healthy_mortality =
+      runif(n = 10, min = 55, max = 85)
+  )
+
+
+simulated_HDI <-
+  tibble(
+    country =
+      c("Argentina", "USA", "Belize", "China", "France", "Italy", "Japan", "Kenya", "Germany", "Canada"),
+    income =
+      runif(n = 10, min = 20000, max = 100000),
+    healthcare =
+      rbinom(n = 10, size = 1, prob = .5)
+  )
+```
+
