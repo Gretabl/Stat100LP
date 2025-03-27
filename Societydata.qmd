@@ -36,3 +36,9 @@ simulated_HDI <-
   )
 ```
 
+#load data 
+```{r}
+
+
+```
+
