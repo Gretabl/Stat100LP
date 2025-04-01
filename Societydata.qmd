@@ -1,5 +1,5 @@
 ---
-title: "Stats 100 project"
+title: "Stats 100 Project"
 author: "Greta Lane and Rowan Pollard"
 format: html
 editor_options: 
