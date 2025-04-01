@@ -1,5 +1,5 @@
 ---
-title: "Stats 100 project"
+title: "Stats 100 Project"
 author: "Greta Lane and Rowan Pollard"
 format: html
 editor_options: 
@@ -9,6 +9,8 @@ editor_options:
 ```{r}
 library(rmarkdown)
 library(tidyverse)
+library(janitor)
+library(lubridate)
 
 ```
 
@@ -36,9 +38,25 @@ simulated_HDI <-
   )
 ```
 
-#load data 
+#plots for the simulated data
 ```{r}
+ggplot( simulated_HDI) +
+  geom_col( aes(x = income, y = healthcare, colour = country)) +
+  labs( x = "income", y = "healthcare")
 
+```
+
+#load data 
+We imported a cleaned excel datasheet. 
+
+#organize and clean data
+```{r}
+head( New_HDI )
+
+new_hdi <- clean_names(New_HDI) |>
+  
+new_hdi <- new_hdi |>
+  arrange(HDI_rank)
 
 ```
 
