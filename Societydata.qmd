@@ -44,6 +44,7 @@ ggplot( simulated_HDI) +
   geom_col( aes(x = income, y = healthcare, colour = country)) +
   labs( x = "income", y = "healthcare")
 
+
 ```
 
 #load data 
