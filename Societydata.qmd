@@ -1,7 +1,7 @@
 ---
 title: "Stats 100 Project"
 author: "Greta Lane and Rowan Pollard"
-format: html
+format: revealjs
 editor_options: 
   chunk_output_type: console
 ---
@@ -55,8 +55,24 @@ head( New_HDI )
 
 new_hdi <- clean_names(New_HDI) |>
   
-new_hdi <- new_hdi |>
-  arrange(HDI_rank)
+#hey blud this command isn't working and we can't figure it out
+new_hdi |> 
+  arrange(hdi_rank, .by_group = FALSE)
+  
+  
+```
+
+#make models for the real data
+```{r}
+#make look better
+ggplot(new_hdi) +
+  geom_point( aes( y = gross_national_income_gni_per_capita, x = life_expectancy_at_birth)) 
+  
+ggplot( new_hdi ) +
+  geom_point( aes( y = mean_years_of_schooling, x = expected_years_of_schooling ))
 
 ```
+
+
+
 
