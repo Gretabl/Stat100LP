@@ -51,12 +51,15 @@ We imported a cleaned excel datasheet.
 
 #organize and clean data
 ```{r}
+New_HDI <- read_csv("data/New_HDI.csv", show_col_types = FALSE)
 head( New_HDI )
 
 new_hdi <- clean_names(New_HDI) |>
+  filter( hdi_rank != ".." ) |>
+  mutate( hdi_rank = as.numeric( hdi_rank ) )
   
 new_hdi <- new_hdi |>
-  arrange(HDI_rank)
+  arrange(hdi_rank)
 
 ```
 
