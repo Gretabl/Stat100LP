@@ -1,5 +1,5 @@
 ---
-title: "Stats 100 Project"
+title: "What Makes a Good Society"
 author: "Greta Lane and Rowan Pollard"
 format: revealjs
 editor_options: 
@@ -20,6 +20,8 @@ The purpose of our project is to see what variables make a "good" society by usi
 
 
 ```{r}
+#| include: FALSE
+
 simulated_ghr_data <-
   tibble(
     country =
@@ -43,6 +45,8 @@ simulated_HDI <-
 ```
 
 ```{r}
+#| include: FALSE
+
 ggplot( simulated_HDI) +
   geom_col( aes(x = income, y = healthcare, colour = country)) +
   labs( x = "income", y = "healthcare")
@@ -52,6 +56,8 @@ ggplot( simulated_HDI) +
 
 
 ```{r}
+#| include: FALSE
+
 New_HDI <- read_csv("data/New_HDI.csv", show_col_types = FALSE)
 head( New_HDI )
 
@@ -59,7 +65,6 @@ new_hdi <- clean_names(New_HDI) |>
   filter( hdi_rank != ".." ) |>
   mutate( hdi_rank = as.numeric( hdi_rank ) )
   
-#hey blud this command isn't working and we can't figure it out
 new_hdi <- new_hdi |>
   arrange(hdi_rank)
   
