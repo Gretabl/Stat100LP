@@ -1,0 +1,25 @@
+---
+title: "What Makes a Happy Country"
+author: "Greta Lane and Rowan Pollard"
+format: revealjs
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+
+```
+
+
+##Purpose
+The purpose of our project is to evaluate what variables go into making a happy and successful country. 
+
+##Visualizations
+```{r}
+
+ggplot( new_hdi ) + 
+  geom_point(aes(x=hdi_rank, y=life_expectancy_at_birth)) +
+  labs( x = "HDI Rank", y = "Average Life Expectancy")
+
+```

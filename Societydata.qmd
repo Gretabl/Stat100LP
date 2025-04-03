@@ -14,7 +14,11 @@ library(lubridate)
 
 ```
 
-# Simulate Data
+## Purpose
+The purpose of our project is to see what variables make a "good" society by using the Human Development Index and the Human Happiness Index. 
+
+
+
 ```{r}
 simulated_ghr_data <-
   tibble(
@@ -38,7 +42,6 @@ simulated_HDI <-
   )
 ```
 
-#plots for the simulated data
 ```{r}
 ggplot( simulated_HDI) +
   geom_col( aes(x = income, y = healthcare, colour = country)) +
@@ -47,10 +50,7 @@ ggplot( simulated_HDI) +
 
 ```
 
-#load data 
-We imported a cleaned excel datasheet. 
 
-#organize and clean data
 ```{r}
 New_HDI <- read_csv("data/New_HDI.csv", show_col_types = FALSE)
 head( New_HDI )
@@ -66,14 +66,12 @@ new_hdi <- new_hdi |>
   
 ```
 
-#make models for the real data
+## Visualizations
 ```{r}
-#make look better
-ggplot(new_hdi) +
-  geom_point( aes( y = gross_national_income_gni_per_capita, x = life_expectancy_at_birth)) 
-  
-ggplot( new_hdi ) +
-  geom_point( aes( y = mean_years_of_schooling, x = expected_years_of_schooling ))
+
+ggplot( new_hdi ) + 
+  geom_point(aes(x=hdi_rank, y=life_expectancy_at_birth)) +
+  labs( x = "HDI Rank", y = " Average Life Expectancy")
 
 ```
 
