@@ -60,8 +60,8 @@ new_hdi <- clean_names(New_HDI) |>
   mutate( hdi_rank = as.numeric( hdi_rank ) )
   
 #hey blud this command isn't working and we can't figure it out
-new_hdi |> 
-  arrange(hdi_rank, .by_group = FALSE)
+new_hdi <- new_hdi |>
+  arrange(hdi_rank)
   
   
 ```
@@ -74,7 +74,6 @@ ggplot(new_hdi) +
   
 ggplot( new_hdi ) +
   geom_point( aes( y = mean_years_of_schooling, x = expected_years_of_schooling ))
->>>>>>> 4d3eb628a2efe48d28564af4c60330637bef9b8e
 
 ```
 
