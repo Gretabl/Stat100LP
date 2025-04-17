@@ -1,0 +1,154 @@
+---
+title: "What Makes a Good Society"
+author: "Greta Lane and Rowan Pollard"
+format: revealjs
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r}
+library(rmarkdown)
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tmap)
+library(geodata)
+
+```
+
+## Purpose
+The purpose of our project is to see what variables make a "good" society by using the Human Development Index and the Human Happiness Index. We expect to see a relationship between happier countries and more developed countries. 
+
+
+
+```{r}
+#| include: FALSE
+
+simulated_ghr_data <-
+  tibble(
+    country =
+      c("Argentina", "USA", "Belize", "China", "France", "Italy", "Japan", "Kenya", "Germany", "Canada"),
+    happiness =
+      runif(n = 10, min = 0, max = 10),
+    healthy_mortality =
+      runif(n = 10, min = 55, max = 85)
+  )
+
+
+simulated_HDI <-
+  tibble(
+    country =
+      c("Argentina", "USA", "Belize", "China", "France", "Italy", "Japan", "Kenya", "Germany", "Canada"),
+    income =
+      runif(n = 10, min = 20000, max = 100000),
+    healthcare =
+      rbinom(n = 10, size = 1, prob = .5)
+  )
+```
+
+```{r}
+#| include: FALSE
+
+ggplot( simulated_HDI) +
+  geom_point( aes(x = income, y = healthcare, colour = country)) +
+  labs( x = "income", y = "healthcare")
+
+
+```
+
+
+```{r}
+#| include: FALSE
+
+New_HDI <- read_csv("data/New_HDI.csv", show_col_types = FALSE)
+head( New_HDI )
+
+new_hdi <- clean_names(New_HDI) |>
+  filter( hdi_rank != ".." ) |>
+  mutate( hdi_rank = as.numeric( hdi_rank ) )
+  
+new_hdi <- new_hdi |>
+  arrange(hdi_rank)
+  
+  
+```
+
+```{r}
+#| include: FALSE
+
+
+#left join 
+
+new_hhi <- read_csv( "data/New_HHI.csv", show_col_types = FALSE)
+
+new_hhi <- clean_names(new_hhi) |>
+  filter( year == 2024)
+
+fixed_hhi <- new_hhi |>
+  select(year, rank, country_name, ladder_score) |>
+  rename( country = country_name ) |>
+  drop_na(year, rank, ladder_score)
+
+joined_df <- full_join(new_hdi, fixed_hhi)
+
+
+```
+
+
+
+## Visualization 1
+```{r}
+
+ggplot( new_hdi ) + 
+  geom_point(aes(x=hdi_rank, y=life_expectancy_at_birth)) +
+  labs( x = "HDI Rank", y = " Average Life Expectancy")
+
+```
+
+## Visualization 2
+```{r}
+
+ggplot( joined_df ) + 
+  geom_point(aes(x=hdi_rank, y=rank)) +
+  labs( x = "HDI Rank", y = " Human Happiness Rank")
+
+```
+
+## Visualization 3
+```{r}
+#| include: FALSE
+
+
+ggplot( new_hdi ) + 
+  geom_point(aes(x=hdi_rank, y=gross_national_income_gni_per_capita)) +
+  labs( x = "", y = "") 
+
+```
+
+
+## Visualization 4
+```{r}
+#| include: FALSE
+
+tmap_options( basemap.server = "OpenStreetMap")
+tmap_mode("view")
+
+mapjoined <- st_as_sf( joined_df, coords = c("country"), crs = "WGS84")
+
+tm_shape(mapjoined) +
+  tm_dots(id = "mapjoined") 
+
+
+
+```
+
+## Summary Statistics
+```{r}
+
+
+```
+
+
+
