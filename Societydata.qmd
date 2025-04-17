@@ -11,11 +11,14 @@ library(rmarkdown)
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(sf)
+library(tmap)
+library(geodata)
 
 ```
 
 ## Purpose
-The purpose of our project is to see what variables make a "good" society by using the Human Development Index and the Human Happiness Index. 
+The purpose of our project is to see what variables make a "good" society by using the Human Development Index and the Human Happiness Index. We expect to see a relationship between happier countries and more developed countries. 
 
 
 
@@ -48,7 +51,7 @@ simulated_HDI <-
 #| include: FALSE
 
 ggplot( simulated_HDI) +
-  geom_col( aes(x = income, y = healthcare, colour = country)) +
+  geom_point( aes(x = income, y = healthcare, colour = country)) +
   labs( x = "income", y = "healthcare")
 
 
@@ -71,7 +74,30 @@ new_hdi <- new_hdi |>
   
 ```
 
-## Visualizations
+```{r}
+#| include: FALSE
+
+
+#left join 
+
+new_hhi <- read_csv( "data/New_HHI.csv", show_col_types = FALSE)
+
+new_hhi <- clean_names(new_hhi) |>
+  filter( year == 2024)
+
+fixed_hhi <- new_hhi |>
+  select(year, rank, country_name, ladder_score) |>
+  rename( country = country_name ) |>
+  drop_na(year, rank, ladder_score)
+
+joined_df <- full_join(new_hdi, fixed_hhi)
+
+
+```
+
+
+
+## Visualization 1
 ```{r}
 
 ggplot( new_hdi ) + 
@@ -80,6 +106,46 @@ ggplot( new_hdi ) +
 
 ```
 
+## Visualization 2
+```{r}
+
+ggplot( joined_df ) + 
+  geom_point(aes(x=hdi_rank, y=rank)) +
+  labs( x = "HDI Rank", y = " Human Happiness Rank")
+
+```
+
+## Visualization 3
+```{r}
+#| include: FALSE
+
+
+ggplot( new_hdi ) + 
+  geom_point(aes(x=hdi_rank, y=gross_national_income_gni_per_capita)) +
+  labs( x = "", y = "") 
+
+```
+
+
+## Visualization 4
+```{r}
+tmap_options( basemap.server = "OpenStreetMap")
+tmap_mode("view")
+
+mapjoined <- st_as_sf( joined_df, coords = c("country"), crs = "WGS84")
+
+tm_shape(mapjoined) +
+  tm_dots(id = "mapjoined") 
+
+
+
+```
+
+## Summary Statistics
+```{r}
+tt(joined_df)
+
+```
 
 
 

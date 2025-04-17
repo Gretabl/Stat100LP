@@ -13,7 +13,7 @@ library(tidyverse)
 
 
 ##Purpose
-The purpose of our project is to evaluate what variables go into making a happy and successful country. 
+The purpose of our project is to evaluate what variables go into making a happy and successful country. We expect to see a relationship between the Human Happiness rankings and the Human Development rankings. 
 
 ##Visualizations
 ```{r}
@@ -21,5 +21,11 @@ The purpose of our project is to evaluate what variables go into making a happy 
 ggplot( new_hdi ) + 
   geom_point(aes(x=hdi_rank, y=life_expectancy_at_birth)) +
   labs( x = "HDI Rank", y = "Average Life Expectancy")
+
+```
+
+##Visualizations 
+```{r}
+plot(new_hdi)
 
 ```
