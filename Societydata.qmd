@@ -18,7 +18,7 @@ library(geodata)
 ```
 
 ## Purpose
-The purpose of our project is to see what variables make a "good" society by using the Human Development Index and the Human Happiness Index. We expect to see a relationship between happier countries and more developed countries. 
+The purpose of our project is to see what variables make a "good" society by using the Human Development Index and the Human Happiness Index. We expect to see a relationship between happier countries and more developed countries.
 
 
 
