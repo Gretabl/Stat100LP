@@ -15,11 +15,15 @@ library(lubridate)
 library(sf)
 library(tmap)
 library(geodata)
+library( tinytable )
+library(psych)
+library(leaflet)
+library(sp)
 
 ```
 
 ## Purpose
-The purpose of our project is to see what variables make a "good" society by using the Human Development Index and the Human Happiness Index. We expect to see a relationship between happier countries and more developed countries. 
+The purpose of our project is to see what variables make a "good" society by using the Human Development Index and the Human Happiness Index. We expect to see a relationship between happier countries and more developed countries. This means that countries with more infrastructure and social support tend to be happier countries.
 
 
 
@@ -93,6 +97,8 @@ fixed_hhi <- new_hhi |>
 
 joined_df <- full_join(new_hdi, fixed_hhi)
 
+joined_df <- joined_df |>
+  mutate( across( c( human_development_index_hdi, expected_years_of_schooling, mean_years_of_schooling, gross_national_income_gni_per_capita ), as.numeric ))
 
 ```
 
@@ -118,34 +124,77 @@ ggplot( joined_df ) +
 
 ## Visualization 3
 ```{r}
-#| include: FALSE
 
 
 ggplot( new_hdi ) + 
   geom_point(aes(x=hdi_rank, y=gross_national_income_gni_per_capita)) +
   labs( x = "", y = "") 
 
+
 ```
 
 
-## Visualization 4
 ```{r}
 #| include: FALSE
 
 tmap_options( basemap.server = "OpenStreetMap")
 tmap_mode("view")
 
-mapjoined <- st_as_sf( joined_df, coords = c("country"), crs = "WGS84")
+joined_df <- joined_df |> 
+  drop_na( hdi_rank )
+joined_df <- joined_df |>
+  mutate( country = case_when( grepl("Hong Kong", country, fixed=TRUE) ~ "Hong Kong",
+                               grepl("Korea", country, fixed=TRUE) ~ "South Korea",
+                               grepl("Bolivia", country, fixed=TRUE) ~ "Bolivia",
+                               grepl("Moldova", country, fixed=TRUE) ~ "Moldova",
+                               grepl("Türkiye", country, fixed=TRUE) ~ "Turkey",
+                               grepl("Iran", country, fixed=TRUE) ~ "Iran",
+                               grepl("Congo", country, fixed=TRUE) ~ "DRC",
+                               grepl("Palestine", country, fixed=TRUE) ~ "Palestine",
+                               grepl("Tanzania", country, fixed=TRUE) ~ "Tanzania",
+                               grepl("Syria", country, fixed=TRUE) ~ "Syria",
+                               grepl("Eswatini", country, fixed=TRUE) ~ "Eswatini",
+                               grepl("Lao", country, fixed=TRUE) ~ "Laos",
+                               grepl("Micronesia", country, fixed=TRUE) ~ "Micronesia",
+                               .default = country ))
+country_polygons <- gadm( country = joined_df, level = 0, path = getwd() )
+country_polygons <- st_as_sf( country_polygons)
 
-tm_shape(mapjoined) +
-  tm_dots(id = "mapjoined") 
+country_polygons <- left_join( country_polygons, joined_df %>% rename( COUNTRY = country ) )
 
+tm_shape( country_polygons ) + 
+  tm_polygons( fill = "human_development_index_hdi")
+
+countries <- unique(joined_df$country)
+
+country_polygons <- gadm(country = countries, level = 0, path = getwd())
+
+country_polygons <- st_as_sf(country_polygons)
+
+country_polygons <- left_join(country_polygons, joined_df, by = c("NAME_0" = "country"))
+
+```
+
+## Summary Statistics 
+```{r}
+
+described <- describe(joined_df |> select( -country, -human_development_index_hdi, -hdi_rank, -year, -rank, -ladder_score, -gross_national_income_gni_per_capita))
+
+#summaries <- summary(joined_df)
+
+#described <- describe(joined_df[, c("life_expectancy_at_birth", "gross_national_income_gni_per_capita")])
+
+tt(described)
 
 
 ```
 
-## Summary Statistics
+## Summary Statistics 
 ```{r}
+gni <- describe( new_hdi |> select( - country, -human_development_index_hdi, -life_expectancy_at_birth, -expected_years_of_schooling, -mean_years_of_schooling, -hdi_rank))
+
+??new_new_hdi <- new_hdi |>
+  mutate( across( c( gross_national_income_gni_per_capita ), as.numeric ))
 
 
 ```
