@@ -138,7 +138,7 @@ ggplot( new_hdi ) +
 #| include: FALSE
 
 tmap_options( basemap.server = "OpenStreetMap")
-tmap_mode("view")
+tmap_mode("plot")
 
 joined_df <- joined_df |> 
   drop_na( hdi_rank )
@@ -149,7 +149,7 @@ joined_df <- joined_df |>
                                grepl("Moldova", country, fixed=TRUE) ~ "Moldova",
                                grepl("Türkiye", country, fixed=TRUE) ~ "Turkey",
                                grepl("Iran", country, fixed=TRUE) ~ "Iran",
-                               grepl("Congo", country, fixed=TRUE) ~ "DRC",
+                               grepl("Congo (Democratic Republic of the)", country, fixed=TRUE) ~ "Democratic Republic of the Congo",
                                grepl("Palestine", country, fixed=TRUE) ~ "Palestine",
                                grepl("Tanzania", country, fixed=TRUE) ~ "Tanzania",
                                grepl("Syria", country, fixed=TRUE) ~ "Syria",
@@ -157,21 +157,18 @@ joined_df <- joined_df |>
                                grepl("Lao", country, fixed=TRUE) ~ "Laos",
                                grepl("Micronesia", country, fixed=TRUE) ~ "Micronesia",
                                .default = country ))
-country_polygons <- gadm( country = joined_df, level = 0, path = getwd() )
+country_polygons <- gadm( country = joined_df$country, level = 0, path = getwd() )
 country_polygons <- st_as_sf( country_polygons)
 
 country_polygons <- left_join( country_polygons, joined_df %>% rename( COUNTRY = country ) )
 
+```
+
+```{r}
 tm_shape( country_polygons ) + 
   tm_polygons( fill = "human_development_index_hdi")
 
-countries <- unique(joined_df$country)
-
-country_polygons <- gadm(country = countries, level = 0, path = getwd())
-
-country_polygons <- st_as_sf(country_polygons)
-
-country_polygons <- left_join(country_polygons, joined_df, by = c("NAME_0" = "country"))
+# setdiff(joined_df$country, country_polygons$NAME_0)
 
 ```
 
