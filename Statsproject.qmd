@@ -100,6 +100,13 @@ joined_df <- full_join(new_hdi, fixed_hhi)
 joined_df <- joined_df |>
   mutate( across( c( human_development_index_hdi, expected_years_of_schooling, mean_years_of_schooling, gross_national_income_gni_per_capita ), as.numeric ))
 
+new_hdi$gross_national_income_gni_per_capita <- gsub(",", "", new_hdi$gross_national_income_gni_per_capita)
+
+numeric_fix_hdi <- new_hdi |>
+  mutate( across( c(gross_national_income_gni_per_capita), as.numeric ))
+
+
+
 ```
 
 
@@ -126,9 +133,9 @@ ggplot( joined_df ) +
 ```{r}
 
 
-ggplot( new_hdi ) + 
+ggplot( numeric_fix_hdi ) + 
   geom_point(aes(x=hdi_rank, y=gross_national_income_gni_per_capita)) +
-  labs( x = "", y = "") 
+  labs( x = "HDI Rank", y = "Gross National Income per Capita") 
 
 
 ```
@@ -171,6 +178,42 @@ tm_shape( country_polygons ) +
 # setdiff(joined_df$country, country_polygons$NAME_0)
 
 ```
+
+```{r}
+tmap_options( basemap.server = "OpenStreetMap")
+tmap_mode("plot")
+
+joined_df2 <- joined_df |> 
+  drop_na( rank )
+joined_df <- joined_df |>
+  mutate( country = case_when( grepl("Hong Kong", country, fixed=TRUE) ~ "Hong Kong",
+                               grepl("Korea", country, fixed=TRUE) ~ "South Korea",
+                               grepl("Bolivia", country, fixed=TRUE) ~ "Bolivia",
+                               grepl("Moldova", country, fixed=TRUE) ~ "Moldova",
+                               grepl("Türkiye", country, fixed=TRUE) ~ "Turkey",
+                               grepl("Iran", country, fixed=TRUE) ~ "Iran",
+                               grepl("Congo (Democratic Republic of the)", country, fixed=TRUE) ~ "Democratic Republic of the Congo",
+                               grepl("Palestine", country, fixed=TRUE) ~ "Palestine",
+                               grepl("Tanzania", country, fixed=TRUE) ~ "Tanzania",
+                               grepl("Syria", country, fixed=TRUE) ~ "Syria",
+                               grepl("Eswatini", country, fixed=TRUE) ~ "Eswatini",
+                               grepl("Lao", country, fixed=TRUE) ~ "Laos",
+                               grepl("Micronesia", country, fixed=TRUE) ~ "Micronesia",
+                               .default = country ))
+country_polygons <- gadm( country = joined_df$country, level = 0, path = getwd() )
+country_polygons <- st_as_sf( country_polygons)
+
+country_polygons <- left_join( country_polygons, joined_df %>% rename( COUNTRY = country ) )
+
+```
+
+```{r}
+tm_shape( country_polygons ) + 
+  tm_polygons( fill = "human_development_index_hdi")
+
+
+```
+
 
 ## Summary Statistics 
 ```{r}
