@@ -120,7 +120,7 @@ ggplot( joined_df ) +
 #| include: FALSE
 
 
-ggplot( new_hdi ) + 
+ggplot( numeric_fix_hdi ) + 
   geom_point(aes(x=hdi_rank, y=gross_national_income_gni_per_capita)) +
   labs( x = "", y = "") 
 
